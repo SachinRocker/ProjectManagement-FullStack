@@ -2,23 +2,22 @@ package com.simpleUI.projectmanagementtool.exceptionhandler;
 
 public class ProjectIdErrorResponse {
 	
-	private String projectId;
+	private String projectIdentifier;
 
-	public String getProjectId() {
-		return projectId;
+	public String getProjectIdentifier() {
+		return projectIdentifier;
 	}
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
+	public void getProjectIdentifier(String projectIdentifier) {
+		this.projectIdentifier = projectIdentifier;
 	}
 
-	public ProjectIdErrorResponse(String projectId) {
-		super();
-		this.projectId = projectId;
+	public ProjectIdErrorResponse(String projectIdentifier) {
+		
+		this.projectIdentifier = projectIdentifier;
 	}
 
 	public ProjectIdErrorResponse() {
-		super();
 		
 	}
 	

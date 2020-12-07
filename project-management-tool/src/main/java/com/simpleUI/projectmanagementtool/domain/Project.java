@@ -27,7 +27,7 @@ public class Project {
 	@NotBlank(message = "Project ID required")
 	@Size(min = 4 , max = 5, message = "Size between 4 to 5 characters")
 	@Column(unique = true, updatable = false)
-	private String projectIdentifer;
+	private String projectIdentifier;
 	
 	@NotBlank(message = "Project description required")
 	private String description;
@@ -74,12 +74,12 @@ public class Project {
 		this.projectName = projectName;
 	}
 
-	public String getProjectIdentifer() {
-		return projectIdentifer;
+	public String getProjectIdentifier() {
+		return projectIdentifier;
 	}
 
-	public void setProjectIdentifer(String projectIdentifer) {
-		this.projectIdentifer = projectIdentifer;
+	public void setProjectIdentifier(String projectIdentifer) {
+		this.projectIdentifier = projectIdentifer;
 	}
 
 	public String getDescription() {

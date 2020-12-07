@@ -8,6 +8,9 @@ import com.simpleUI.projectmanagementtool.domain.Project;
 @Repository
 public interface ProjectRepository extends CrudRepository<Project, Integer> {
 
-	Project findByprojectIdentifer(String projectId);
+	Project findByprojectIdentifier(String projectIdentifier);
 
 }
+	
+
+
