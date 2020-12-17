@@ -1,1 +1,7 @@
-export { createProject} from "./ProjectActions"
+export {
+    createProject,
+    loadProject,
+    fetchProjectToUpdate,
+    updateProject,
+    deleteProject
+} from "./ProjectActions"
