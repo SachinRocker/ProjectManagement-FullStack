@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
-public class ProjectIDExceptionHandler {
+public class ProjectExceptionHandler {
 	
 	
 	@ExceptionHandler
@@ -20,6 +20,16 @@ public class ProjectIDExceptionHandler {
 		return new ResponseEntity<Object>(errorResponse, HttpStatus.BAD_REQUEST);
 		
 	}
+	@ExceptionHandler
+	public ResponseEntity<Object> handleBacklogException(BacklogCustomException exc,WebRequest request){
+		
+		BacklogErrorResponse errorResponse = new BacklogErrorResponse(exc.getMessage());
+		
+		return new ResponseEntity<Object>(errorResponse, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	
 	
 
 }

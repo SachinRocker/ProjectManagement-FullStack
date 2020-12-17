@@ -26,7 +26,7 @@ public class ProjectController {
 	@Autowired
 	private ProjectService projectService;
 	@Autowired
-	FieldsValidationService fieldValidation;
+	private FieldsValidationService fieldValidation;
 
 	@PostMapping("/project")
 	public ResponseEntity<?> createProject(@Valid @RequestBody Project project, BindingResult results) {
@@ -65,8 +65,13 @@ public class ProjectController {
 	}
 	
 	@PutMapping("/project")
-	public ResponseEntity<?> updateProject(@RequestBody Project project){
-		Project updatedProject = projectService.updateProject(project);
+	public ResponseEntity<?> updateProject(@Valid @RequestBody Project project, BindingResult results){
+		ResponseEntity<?> errorResponse = fieldValidation.getFiledErrorResponse(results);
+		
+		if (errorResponse != null)
+			return errorResponse;
+		
+		Project updatedProject = projectService.updateTheProject(project);
 		
 		return new ResponseEntity<Project>(updatedProject,HttpStatus.OK);
 		

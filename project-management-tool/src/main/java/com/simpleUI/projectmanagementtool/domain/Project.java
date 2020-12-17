@@ -2,24 +2,29 @@ package com.simpleUI.projectmanagementtool.domain;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Project {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 	
 	@NotBlank(message = "Project name required")
 	private String projectName;
@@ -29,6 +34,10 @@ public class Project {
 	@Column(unique = true, updatable = false)
 	private String projectIdentifier;
 	
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JsonIgnore
+	private Backlog backlog;
+	
 	@NotBlank(message = "Project description required")
 	private String description;
 	
@@ -37,12 +46,21 @@ public class Project {
 	
 	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date endDate;
-	
 	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date createdAt;
 	
 	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date updatedAt;
+	
+	public Backlog getBacklog() {
+		return backlog;
+	}
+
+	public void setBacklog(Backlog backlog) {
+		this.backlog = backlog;
+	}
+
+
 	
 	public Project() {
 	}
@@ -58,11 +76,11 @@ public class Project {
 	}
 
 	
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
