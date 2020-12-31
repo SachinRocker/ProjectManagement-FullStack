@@ -21,37 +21,31 @@ public class Backlog {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	private String projectIdentifier;
-	
-	private Integer PTSequence=0;
-	
-	//oneToOne with project
+
+	private Integer PTSequence = 0;
+
+	// oneToOne with project
 	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "project_id" , nullable = false)
+	@JoinColumn(name = "project_id", nullable = false)
 	@JsonIgnore
 	private Project project;
-	
-	
-	
-	//oneToMany with project task
-	@OneToMany(mappedBy = "backlog",fetch = FetchType.EAGER,cascade = CascadeType.REFRESH, orphanRemoval = true)
-	private List<ProjectTask> projectTask;
-	
-	
-	
-	
+
+	// oneToMany with project task
+	@OneToMany(mappedBy = "backlog", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ProjectTask> projectTasks;
 
 	public Backlog() {
-		
+
 	}
 
 	public List<ProjectTask> getProjectTask() {
-		return projectTask;
+		return projectTasks;
 	}
 
 	public void setProjectTask(List<ProjectTask> projectTask) {
-		this.projectTask = projectTask;
+		this.projectTasks = projectTask;
 	}
 
 	public Project getProject() {
@@ -61,7 +55,6 @@ public class Backlog {
 	public void setProject(Project project) {
 		this.project = project;
 	}
-
 
 	public Long getId() {
 		return id;
@@ -86,10 +79,16 @@ public class Backlog {
 	public void setPTSequence(Integer pTSequence) {
 		PTSequence = pTSequence;
 	}
-	
-	
-	
-	
 
+	// methods to synchronize the relation between the mappings
+	public void addTaskToBacklog(ProjectTask task) {
+		projectTasks.add(task);
+		task.setBacklog(this);
+	}
+
+	public void removeTaskFromBacklog(ProjectTask task) {
+		projectTasks.remove(task);
+		task.setBacklog(null);
+	}
 
 }

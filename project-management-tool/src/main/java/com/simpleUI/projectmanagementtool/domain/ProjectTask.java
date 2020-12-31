@@ -15,44 +15,46 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javassist.expr.Instanceof;
 
 @Entity
 public class ProjectTask {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@Column(updatable = false)
+
+	@Column(updatable = false, unique = true)
 	private String projectSequence;
-	
+
 	@NotBlank(message = "Describe the project summary")
 	private String summary;
-	
+
 	private String acceptenceCreteria;
 	private String status;
 	private Long priority;
-	
-	//ManyToOne with Backlog
-	@ManyToOne(fetch = FetchType.EAGER)
+
+	// ManyToOne with Backlog
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "backlog_id", updatable = false, nullable = false)
 	@JsonIgnore
 	private Backlog backlog;
-	
-	
-	@Column(updatable = false, unique = true)
+
+	@Column(updatable = false)
 	public String projectIdentifier;
-	private Date createdAt; 
-	private Date updatedAt; 
-	private Date dueDate; 
-	
-	
+	private Date createdAt;
+	private Date updatedAt;
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private Date dueDate;
+
 	@PrePersist
 	public void startDate() {
 		this.createdAt = new Date();
 	}
-	
+
 	@PreUpdate
 	public void setUpdateDate() {
 		this.updatedAt = new Date();
@@ -62,8 +64,7 @@ public class ProjectTask {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
-	
+
 	public Backlog getBacklog() {
 		return backlog;
 	}
@@ -153,16 +154,17 @@ public class ProjectTask {
 	}
 
 	@Override
-	public String toString() {
-		return "ProjectTask [id=" + id + ", projectSequence=" + projectSequence + ", summary=" + summary
-				+ ", acceptenceCreteria=" + acceptenceCreteria + ", status=" + status + ", priority=" + priority
-				+ ", projectIdentifier=" + projectIdentifier + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
-				+ ", dueDate=" + dueDate + "]";
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof ProjectTask))
+			return false;
+		return id!= null && id.equals(((ProjectTask)obj).getId());
 	}
 	
-	
-	
-	
-	
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 
 }

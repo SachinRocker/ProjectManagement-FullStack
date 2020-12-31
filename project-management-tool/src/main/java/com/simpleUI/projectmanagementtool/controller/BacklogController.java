@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,15 +21,17 @@ import com.simpleUI.projectmanagementtool.services.FieldsValidationService;
 import com.simpleUI.projectmanagementtool.services.ProjectTaskService;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/backlog")
 public class BacklogController {
-
+	
 	@Autowired
 	private ProjectTaskService projectTaskService;
-
+	
 	@Autowired
 	private FieldsValidationService fieldValidation;
-
+	
+	
 	@PostMapping("/{projectIdentifier}")
 	public ResponseEntity<?> addProjectTask(@Valid @RequestBody ProjectTask projectTask, BindingResult results,
 			@PathVariable String projectIdentifier) {
@@ -37,23 +40,26 @@ public class BacklogController {
 		if (errorResponse != null)
 			return errorResponse;
 
-		ProjectTask task = projectTaskService.addProject(projectIdentifier, projectTask);
+		ProjectTask task = projectTaskService.addTask(projectIdentifier, projectTask);
 
 		return new ResponseEntity<ProjectTask>(task, HttpStatus.CREATED);
 	}
 
+	
 	@GetMapping("/{projectIdentifier}")
 	public Iterable<ProjectTask> findProjectTasks(@PathVariable String projectIdentifier) {
 
 		return projectTaskService.findBacklogProjectTasks(projectIdentifier);
 	}
 
+	
 	@GetMapping("/{projectIdentifier}/{projectSequence}")
 	public ProjectTask findProjectTask(@PathVariable String projectIdentifier, @PathVariable String projectSequence) {
 
 		return projectTaskService.findProjectTask(projectIdentifier, projectSequence);
 	}
 
+	
 	
 	@PatchMapping("/{projectIdentifier}/{projectSequence}")
 	public ResponseEntity<?> updateProjectTask(@Valid @RequestBody ProjectTask projectTask, BindingResult results,
@@ -68,6 +74,7 @@ public class BacklogController {
 		return new ResponseEntity<ProjectTask>(updatedTask, HttpStatus.OK);
 	}
 	
+	
 	@DeleteMapping("/{projectIdentifier}/{projectSequence}")
 	public ResponseEntity<?> deleteProjectTask(
 			@PathVariable String projectIdentifier, @PathVariable String projectSequence) {
@@ -76,4 +83,5 @@ public class BacklogController {
 
 		return new ResponseEntity<Object>("Project Task deleted", HttpStatus.OK);
 	}
+	
 }

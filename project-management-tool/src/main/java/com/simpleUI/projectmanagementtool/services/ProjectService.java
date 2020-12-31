@@ -64,8 +64,11 @@ public class ProjectService {
 		Project project = projectRepository.findByprojectIdentifier(projectId.toUpperCase());
 		if (project == null)
 			throw new ProjectIDException("Project ID: " + projectId.toUpperCase() + " does not exist");
-		else
+		else {
+			System.out.println("project:: "+project);
 			projectRepository.delete(project);
+		}
+			
 	}
 
 	public Project updateProject(Project project) {
@@ -90,14 +93,12 @@ public class ProjectService {
 
 		if (p == null)
 			throw new ProjectIDException("Project ID: " + projectIdentifier + " does not exist");
-		else {
-			
+		else {			
 			project.setBacklog(backlogRepository.findByProjectIdentifier(projectIdentifier));
 			// Optional<Project> dbProject = projectRepository.findById(id);
 			project.setId(p.getId());
 			projectRepository.save(project);
 			return project;
-
 		}
 	}
 }

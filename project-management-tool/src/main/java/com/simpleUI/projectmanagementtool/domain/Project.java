@@ -34,7 +34,7 @@ public class Project {
 	@Column(unique = true, updatable = false)
 	private String projectIdentifier;
 	
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToOne( mappedBy = "project",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Backlog backlog;
 	
@@ -139,6 +139,7 @@ public class Project {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+
 
 
 

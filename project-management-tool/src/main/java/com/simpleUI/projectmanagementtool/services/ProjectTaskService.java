@@ -26,37 +26,77 @@ public class ProjectTaskService {
 	@Autowired
 	private ProjectRepository projectRepository;
 
-	public ProjectTask addProject(String projectId, ProjectTask projectTask) {
-		// Exception handling
-
+	public ProjectTask addProjectTask(String projectId, ProjectTask projectTask) {
+		// Exception handling  
 		// set PTs to project if project != null and backlog exists.
 		String projectIdentifier = projectId.toUpperCase();
 		Backlog backlog = backlogRepository.findByProjectIdentifier(projectIdentifier);
 		if (backlog == null)
 			throw new BacklogCustomException("Project Not Found");
-		// set the backlog to PT
-		projectTask.setBacklog(backlog);
+		else {
+			
+			// set the backlog to PT
+			projectTask.setBacklog(backlog);
 
-		Integer ptSequence = backlog.getPTSequence();
-		// update the backlog sequence
-		ptSequence++;
-		backlog.setPTSequence(ptSequence);
+			Integer ptSequence = backlog.getPTSequence();
+			// update the backlog sequence
+			ptSequence++;
+			backlog.setPTSequence(ptSequence);
 
-		// Project sequence to be like TODO-1 TODO-2 ... TODO-101,TODO-102
-		projectTask.setProjectSequence(projectIdentifier + "-" + ptSequence);
+			// Project sequence to be like TODO-1 TODO-2 ... TODO-101,TODO-102
+			projectTask.setProjectSequence(projectIdentifier + "-" + ptSequence);
 
-		projectTask.setProjectIdentifier(projectIdentifier);
+			projectTask.setProjectIdentifier(projectIdentifier);
 
-		// Initial priority when priority null
-		Long priority = projectTask.getPriority();
-		if (priority == null)
-			projectTask.setPriority(3L);// set to low priority
+			// Initial priority when priority null
+			Long priority = projectTask.getPriority();
+			if (priority==0|| priority == null)
+				projectTask.setPriority(3L);// set to low priority
 
-		// Initial status when status null
-		String status = projectTask.getStatus();
-		if (status == "" || status == null)
-			projectTask.setStatus("TO_DO");
+			// Initial status when status null
+			String status = projectTask.getStatus();
+			if (status == "" || status == null)
+				projectTask.setStatus("TO_DO");
+		}
+		
+		
 
+		return projectTaskRepository.save(projectTask);
+	}
+	public ProjectTask addTask(String projectId, ProjectTask projectTask) {
+		// Exception handling  
+		// set PTs to project if project != null and backlog exists.
+		String projectIdentifier = projectId.toUpperCase();
+		Backlog backlog = backlogRepository.findByProjectIdentifier(projectIdentifier);
+		if (backlog == null)
+			throw new BacklogCustomException("Project Not Found");
+		else {
+			
+			// set the backlog to PT
+			
+			backlog.addTaskToBacklog(projectTask);
+			Integer ptSequence = backlog.getPTSequence();
+			// update the backlog sequence
+			ptSequence++;
+			backlog.setPTSequence(ptSequence);
+		
+			// Project sequence to be like TODO-1 TODO-2 ... TODO-101,TODO-102
+			projectTask.setProjectSequence(projectIdentifier + "-" + ptSequence);
+
+			projectTask.setProjectIdentifier(projectIdentifier);
+			
+
+			// Initial priority when priority null
+			Long priority = projectTask.getPriority();
+			if (priority==0|| priority == null)
+				projectTask.setPriority(3L);// set to low priority
+
+			// Initial status when status null
+			String status = projectTask.getStatus();
+			if (status == "" || status == null)
+				projectTask.setStatus("TO_DO");
+		}
+		System.out.println("pt sequence "+projectTask.getProjectSequence());
 		return projectTaskRepository.save(projectTask);
 	}
 
@@ -91,7 +131,7 @@ public class ProjectTaskService {
 					"Project with id: '" + projectId + "' does not belong to '" + projectSequence + "' project");
 
 		return projectTaskRepository.findByProjectSequence(projectSequence.toUpperCase());
-
+		
 	}
 
 	
@@ -113,6 +153,9 @@ public class ProjectTaskService {
 
 	public void deleteTask(String projectIdentifier, String projectSequence) {
 		ProjectTask projectTask  = findProjectTask(projectIdentifier, projectSequence);
+		Backlog backlog = backlogRepository.findByProjectIdentifier(projectIdentifier);
+		backlog.removeTaskFromBacklog(projectTask);
+		
 		
 		projectTaskRepository.delete(projectTask);
 		
