@@ -1,5 +1,7 @@
 package com.simpleUI.projectmanagementtool.controller;
 
+import java.security.Principal;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,49 +31,49 @@ public class ProjectController {
 	private FieldsValidationService fieldValidation;
 
 	@PostMapping("/project")
-	public ResponseEntity<?> createProject(@Valid @RequestBody Project project, BindingResult results) {
+	public ResponseEntity<?> createProject(@Valid @RequestBody Project project, BindingResult results, Principal principal) {
 		
 		ResponseEntity<?> errorResponse = fieldValidation.getFiledErrorResponse(results);
 		
 		if (errorResponse != null)
 			return errorResponse;
 
-		projectService.saveOrUpdateProject(project);
+		projectService.saveOrUpdateProject(project,principal.getName());
 
 		return new ResponseEntity<Project>(project, HttpStatus.CREATED);
 
 	}
 
 	@GetMapping("/project/{projectId}")
-	public ResponseEntity<Project> getProjectByID(@PathVariable String projectId) {
-		Project project = projectService.findProjectByIdentifier(projectId);
+	public ResponseEntity<Project> getProjectByID(@PathVariable String projectId, Principal principal) {
+		Project project = projectService.findProjectByIdentifier(projectId,principal.getName());
 
 		return new ResponseEntity<Project>(project, HttpStatus.OK);
 	}
 	
 	@GetMapping("/projects")
-	public Iterable<Project> findProjects(){
+	public Iterable<Project> findProjects(Principal principal){
 		
-		return projectService.findAllProjects();
+		return projectService.findAllProjects(principal.getName());
 	}
 	
 	@DeleteMapping("/project/{projectId}")
-	public ResponseEntity<?> deleteProject(@PathVariable String projectId){
+	public ResponseEntity<?> deleteProject(@PathVariable String projectId, Principal principal){
 		
-		projectService.deleteProjectById(projectId);
+		projectService.deleteProjectById(projectId, principal.getName());
 		
 		return new ResponseEntity<String>("Project with id: "+projectId.toUpperCase()+" deleted successfully"
 											,HttpStatus.OK);
 	}
 	
 	@PutMapping("/project")
-	public ResponseEntity<?> updateProject(@Valid @RequestBody Project project, BindingResult results){
+	public ResponseEntity<?> updateProject(@Valid @RequestBody Project project, BindingResult results,Principal principal){
 		ResponseEntity<?> errorResponse = fieldValidation.getFiledErrorResponse(results);
 		
 		if (errorResponse != null)
 			return errorResponse;
 		
-		Project updatedProject = projectService.updateTheProject(project);
+		Project updatedProject = projectService.updateTheProject(project,principal.getName());
 		
 		return new ResponseEntity<Project>(updatedProject,HttpStatus.OK);
 		

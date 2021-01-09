@@ -29,6 +29,25 @@ public class ProjectExceptionHandler {
 		
 	}
 	
+	@ExceptionHandler
+	public ResponseEntity<Object> usernameException(UsernameCustomException exc,WebRequest request){
+		
+		UsernameErrorResponse errorResponse = new UsernameErrorResponse(exc.getMessage());
+		
+		return new ResponseEntity<Object>(errorResponse, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler
+	public ResponseEntity<Object> handleProjectException(ProjectNotFoundException exc,WebRequest request){
+		
+		BacklogErrorResponse errorResponse = new BacklogErrorResponse(exc.getMessage());		
+		
+		return new ResponseEntity<Object>(errorResponse, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	
 	
 	
 

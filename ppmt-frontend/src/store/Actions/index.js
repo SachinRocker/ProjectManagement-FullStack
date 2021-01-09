@@ -12,3 +12,4 @@ export {
   updateProjectTask,
   deleteProjectTask,
 } from "./backlogActions.js";
+export { registerUser, login, logout } from "./securityActions";

@@ -25,12 +25,14 @@ public class ProjectTaskService {
 
 	@Autowired
 	private ProjectRepository projectRepository;
+	@Autowired
+	private ProjectService projectService;
 
 	public ProjectTask addProjectTask(String projectId, ProjectTask projectTask) {
 		// Exception handling  
 		// set PTs to project if project != null and backlog exists.
 		String projectIdentifier = projectId.toUpperCase();
-		Backlog backlog = backlogRepository.findByProjectIdentifier(projectIdentifier);
+		Backlog backlog = backlogRepository.findByProjectIdentifier(projectId);
 		if (backlog == null)
 			throw new BacklogCustomException("Project Not Found");
 		else {
@@ -63,11 +65,11 @@ public class ProjectTaskService {
 
 		return projectTaskRepository.save(projectTask);
 	}
-	public ProjectTask addTask(String projectId, ProjectTask projectTask) {
+	public ProjectTask addTask(String projectId, ProjectTask projectTask, String username) {
 		// Exception handling  
 		// set PTs to project if project != null and backlog exists.
 		String projectIdentifier = projectId.toUpperCase();
-		Backlog backlog = backlogRepository.findByProjectIdentifier(projectIdentifier);
+		Backlog backlog = projectService.findProjectByIdentifier(projectId, username).getBacklog();
 		if (backlog == null)
 			throw new BacklogCustomException("Project Not Found");
 		else {
@@ -96,14 +98,14 @@ public class ProjectTaskService {
 			if (status == "" || status == null)
 				projectTask.setStatus("TO_DO");
 		}
-		System.out.println("pt sequence "+projectTask.getProjectSequence());
 		return projectTaskRepository.save(projectTask);
 	}
 
-	public Iterable<ProjectTask> findBacklogProjectTasks(String projectId) {
+	public Iterable<ProjectTask> findBacklogProjectTasks(String projectId,String username) {
 		String projectIdentifier = projectId.toUpperCase();
-
-		Project project = projectRepository.findByprojectIdentifier(projectIdentifier);
+		
+		
+		Project project = projectService.findProjectByIdentifier(projectId, username);
 		if (project == null)
 			throw new BacklogCustomException("Project with id: '" + projectId + "' does not exits");
 		Iterable<ProjectTask> projectTasks  = projectTaskRepository.findByProjectIdentifier(projectIdentifier);
@@ -116,11 +118,11 @@ public class ProjectTaskService {
 		return projectTasks;
 	}
 
-	public ProjectTask findProjectTask(String projectId, String projectSequence) {
+	public ProjectTask findProjectTask(String projectId, String projectSequence,String username) {
 
 		String projectIdentifier = projectId.toUpperCase();
-
-		Backlog backlog = backlogRepository.findByProjectIdentifier(projectIdentifier);
+		
+		Backlog backlog = projectService.findProjectByIdentifier(projectId, username).getBacklog();
 		if (backlog == null)
 			throw new BacklogCustomException("Project with id: '" + projectId + "' does not exits");
 		ProjectTask projectTask = projectTaskRepository.findByProjectSequence(projectSequence.toUpperCase());
@@ -136,8 +138,8 @@ public class ProjectTaskService {
 
 	
 	public ProjectTask updateTask(ProjectTask projectTask, String projectIdentifier,
-			String projectSequence) {
-		ProjectTask task = findProjectTask(projectIdentifier, projectSequence);
+			String projectSequence,String username) {
+		ProjectTask task = findProjectTask(projectIdentifier, projectSequence,username);
 		
 		if(!projectIdentifier.equals(projectTask.getProjectIdentifier()) ||
 			!projectSequence.equals(projectTask.getProjectSequence())) {
@@ -151,9 +153,10 @@ public class ProjectTaskService {
 	
 	}
 
-	public void deleteTask(String projectIdentifier, String projectSequence) {
-		ProjectTask projectTask  = findProjectTask(projectIdentifier, projectSequence);
-		Backlog backlog = backlogRepository.findByProjectIdentifier(projectIdentifier);
+	public void deleteTask(String projectIdentifier, String projectSequence,String username) {
+		ProjectTask projectTask  = findProjectTask(projectIdentifier, projectSequence,username);
+		Backlog backlog = projectTask.getBacklog();
+//		Backlog backlog = backlogRepository.findByProjectIdentifier(projectIdentifier);
 		backlog.removeTaskFromBacklog(projectTask);
 		
 		

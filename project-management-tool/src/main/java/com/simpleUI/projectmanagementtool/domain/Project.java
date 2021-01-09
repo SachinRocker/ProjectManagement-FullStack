@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -41,20 +42,41 @@ public class Project {
 	@NotBlank(message = "Project description required")
 	private String description;
 	
-	@JsonFormat(pattern = "yyyy-mm-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date startDate;
 	
-	@JsonFormat(pattern = "yyyy-mm-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date endDate;
-	@JsonFormat(pattern = "yyyy-mm-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date createdAt;
 	
-	@JsonFormat(pattern = "yyyy-mm-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date updatedAt;
+	
+	//@NotBlank(message = "ProjectLead name cannot be blank")
+	private String projectLead;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	@JsonIgnore
+	private User user;
+	
+	public String getProjectLead() {
+		return projectLead;
+	}
+
+
+	public void setProjectLead(String projectLead) {
+		this.projectLead = projectLead;
+	}
+
+	
+	
 	
 	public Backlog getBacklog() {
 		return backlog;
 	}
+	
 
 	public void setBacklog(Backlog backlog) {
 		this.backlog = backlog;
@@ -62,7 +84,16 @@ public class Project {
 
 
 	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public Project() {
+	
 	}
 
 	@PrePersist
@@ -139,6 +170,9 @@ public class Project {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+
+
+	
 
 
 

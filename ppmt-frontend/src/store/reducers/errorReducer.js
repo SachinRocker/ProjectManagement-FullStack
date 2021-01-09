@@ -1,25 +1,23 @@
-import {GET_ERRORS} from "../Actions/ActionTypes"
+import { GET_ERRORS } from "../Actions/ActionTypes";
 
 const initialState = {
-  errors:""
-}
+  errors: "",
+};
 
 const createProjectError = (state, action) => {
-    return {
-        ...state,
-        errors: action.error,
-    }
-}
-
+  console.log("createProjectError::", action.error);
+  return {
+    ...state,
+    errors: action.error,
+  };
+};
 
 const reducer = (state = initialState, action) => {
-    switch (action.type) {
-        case GET_ERRORS:
-            return createProjectError(state,action);
-        default:
-            return state;
-
-    }
-}
+  switch (action.type) {
+    case GET_ERRORS:
+      return createProjectError(state, action);
+    default:
+      return state;
+  }
+};
 export default reducer;
-

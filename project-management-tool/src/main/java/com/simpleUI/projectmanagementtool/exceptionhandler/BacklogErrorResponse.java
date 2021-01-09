@@ -1,6 +1,7 @@
 package com.simpleUI.projectmanagementtool.exceptionhandler;
 
 public class BacklogErrorResponse {
+
 	private String message;
 
 	public BacklogErrorResponse(String message) {
@@ -16,6 +17,7 @@ public class BacklogErrorResponse {
 		return this.message;
 		
 	}
+
 
 	
 	

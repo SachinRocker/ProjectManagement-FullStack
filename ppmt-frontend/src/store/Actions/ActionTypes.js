@@ -9,3 +9,8 @@ export const ADD_PROJECT_TASK = "ADD_PROJECT_TASK";
 export const GET_BACKLOG = "GET_BACKLOG";
 export const GET_PROJECT_TASK = "GET_PROJECT_TASK";
 export const DELETE_PROJECT_TASK = "DELETE_PROJECT_TASK";
+
+//user actions
+export const REGISTER_USER = "REGISTER_USER";
+export const AUTH_USER = "AUTH_USER";
+export const SET_CURRENT_USER = "SET_CURRENT_USER";
